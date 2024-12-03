@@ -419,7 +419,7 @@ smd({
     const videoUrl = _0x4ec99f; // Facebook video URL
 
     // Call the Facebook downloader API
-    const apiUrl = `https://itzpire.com/download/facebook?url=${encodeURIComponent(videoUrl)}`;
+    const apiUrl = `https://api.giftedtech.my.id/api/download/facebook?apikey=gifted&url=${encodeURIComponent(videoUrl)}`;
 
     const response = await axios.get(apiUrl);
     const data = response.data;

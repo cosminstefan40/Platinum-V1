@@ -14,7 +14,7 @@ smd(
   {
     pattern: "gpt",
     react: "🤖",
-    desc: "Get a response from Bing AI based on user query.",
+    desc: "Get a response from chatgpt4 based on user query.",
     category: "ai",
     filename: __filename,
   },
@@ -30,7 +30,7 @@ smd(
       await m.send("Chill your request is being processed •°•° 🤔");
 
       // Define the API URL
-      const apiUrl = `https://widipe.com/gpt4?text=${encodeURIComponent(query)}`;
+      const apiUrl = `https://api.giftedtech.my.id/api/ai/gpt4-o?apikey=gifted&q=${encodeURIComponent(query)}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -73,7 +73,7 @@ smd(
       await m.send("Chill your request is being processed •°•° 🤔");
 
       // Define the API URL
-      const apiUrl = `https://itzpire.com/ai/bing-ai?model=Precise&q=${encodeURIComponent(query)}`;
+      const apiUrl = `https://api.giftedtech.my.id/api/search/bing?apikey=gifted&query=${encodeURIComponent(query)}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -323,7 +323,7 @@ smd(
       await m.send("Chill your request is being processed •°•° 🤔");
 
       // Define the new API URL
-      const apiUrl = `https://widipe.com/gemini?text=${encodeURIComponent(query)}`;
+      const apiUrl = `https://api.giftedtech.my.id/api/ai/geminiaipro?apikey=gifted&q=${encodeURIComponent(query)}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
