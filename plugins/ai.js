@@ -30,7 +30,7 @@ smd(
       await m.send("Chill your request is being processed •°•° 🤔");
 
       // Define the API URL
-      const apiUrl = `https://api.giftedtech.my.id/api/ai/gpt4-o?apikey=gifted&q=${encodeURIComponent(query)}`;
+      const apiUrl = `https://www.dark-yasiya-api.site/ai/chatgpt?q=${encodeURIComponent(query)}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -451,7 +451,7 @@ smd(
       }
 
       // Construct the API URL with the provided query
-      const apiUrl = `https://widipe.com/v1/text2img?text=${encodeURIComponent(query)}`;
+      const apiUrl = `https://api.giftedtech.my.id/api/ai/sd?apikey=gifted&prompt=${encodeURIComponent(query)}`;
       
       // Fetch the response from the API
       const response = await fetch(apiUrl);

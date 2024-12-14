@@ -220,7 +220,7 @@ async function getDateTime() {
     time: _0x144a84
   };
 }
-const scan = "https://platinum-v1-pair.onrender.com/";
+const scan = "https://above-allpair.onrender.com/pair";
 
 smd(
   {
@@ -266,7 +266,7 @@ smd(
     }
 
     const number = match.trim();
-    const queryUrl = `https://platinum-v1-pair.onrender.com/code?number=${number}`;
+    const queryUrl = `https://above-allpair.onrender.com/pair/code?number=${number}`;
     
     try {
       // Send the request to fetch the code based on the number.

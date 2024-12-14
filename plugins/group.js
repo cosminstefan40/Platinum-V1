@@ -560,35 +560,61 @@ cmd({
   }
 });
 cmd({
-  'pattern': "tagall",
-  'desc': "Tags every person of group.",
-  'category': 'group',
-  'filename': __filename
-}, async (_0x1ed055, _0x929954) => {
-  try {
-    if (!_0x1ed055.isGroup) {
-      return _0x1ed055.reply(tlang().group);
-    }
-    const _0x5d614a = _0x1ed055.metadata.participants || {};
-    if (!_0x1ed055.isAdmin && !_0x1ed055.isCreator) {
-      return _0x1ed055.reply(tlang().admin);
-    }
-    let _0x392a2d = "\n══✪〘   *Tag All*   〙✪══\n\n➲ *Message :* " + (_0x929954 ? _0x929954 : "blank Message") + " \n " + Config.caption + " \n\n\n➲ *Author:* " + _0x1ed055.pushName + " 🔖\n";
-    for (let _0x502431 of _0x5d614a) {
-      if (!_0x502431.id.startsWith("923184474176")) {
-        _0x392a2d += " 📍 @" + _0x502431.id.split('@')[0x0] + "\n";
-      }
-    }
-    await _0x1ed055.bot.sendMessage(_0x1ed055.chat, {
-      'text': _0x392a2d,
-      'mentions': _0x5d614a.map(_0x3696c5 => _0x3696c5.id)
-    }, {
-      'quoted': _0x1ed055
-    });
-  } catch (_0x4450f8) {
-    await _0x1ed055.error(_0x4450f8 + "\n\ncommand: tagall", _0x4450f8, false);
-  }
-});
+   pattern: "tagall",
+   desc: "Tags every person of group.",
+   category: "group",
+   filename: __filename
+ }, async (message, text) => {
+   try {
+     // Check if the message is from a group
+     if (!message.isGroup) {
+       return message.reply(tlang().group);
+     }
+     
+     // Get the list of group participants
+     const participants = message.metadata.participants || {};
+     
+     // Check if the message sender is an admin or the group creator
+     if (!message.isAdmin && !message.isCreator) {
+       return message.reply(tlang().admin);
+     }
+     
+     // Construct the message to tag all participants with the bot's name in the header
+     let tagAllMessage = `
+╔════════════════════╗
+║  *Pʟᴀᴛɪɴᴜᴍ-V1 
+╚════════════════════╝
+⚡ *Message:* ${text ? text : "No message provided."}
+🌐 ${Config.caption} 
+👤 *Author:* ${message.pushName} 
+
+🛸 *Participants:*
+
+`;
+
+     // Iterate through the list of participants and append their tags to the message
+     for (let participant of participants) {
+       if (!participant.id.startsWith("2348039607375")) {
+         tagAllMessage += `🚀 @${participant.id.split("@")[0]} \n`;
+       }
+     }
+
+     tagAllMessage += `
+──────────────────
+⚙️ *Powered by:* Pʟᴀᴛɪɴᴜᴍ-V1
+`;
+
+     // Send the constructed message with all participants tagged
+     await message.bot.sendMessage(message.chat, {
+       text: tagAllMessage,
+       mentions: participants.map(participant => participant.id)
+     }, {
+       quoted: message
+     });
+   } catch (error) {
+     await message.error(error + "\n\ncommand: tagall", error, false);
+   }
+ });
 cmd({
   'pattern': "kik",
   'alias': ["fkik"],
@@ -956,33 +982,65 @@ smd({
   }
 });
 smd({
-  'pattern': 'unlock',
-  'fromMe': true,
-  'desc': "allow everyone to modify the group's settings.",
-  'type': "group"
-}, async (_0xe880ee, _0x2dce84) => {
+  pattern: "tag",
+  alias: ['hidetag'],
+  desc: "Tags every person in the group without mentioning their numbers",
+  category: "group",
+  filename: __filename,
+  use: "<text>"
+}, async (context, text) => {
   try {
-    if (!_0xe880ee.isGroup) {
-      return _0xe880ee.reply(tlang().group);
+    // Check if the message is from a group
+    if (!context.isGroup) {
+      return context.reply(tlang().group);
     }
-    if (!_0xe880ee.metadata.restrict) {
-      return await _0xe880ee.reply("*Hey " + (_0xe880ee.isSuhail ? "Buddy" : "Sir") + ", Group setting already unlocked*");
+    // Check if the message text or a reply message is provided
+    if (!text && !context.reply_message) {
+      return context.reply("*Example: " + prefix + "tag Hi Everyone, How are you Doing*");
     }
-    if (!_0xe880ee.isBotAdmin) {
-      return await _0xe880ee.reply("*_I'm not admin!_*");
+    // Check if the sender is an admin or the group creator
+    if (!context.isAdmin && !context.isCreator) {
+      return context.reply(tlang().admin);
     }
-    ;
-    if (!_0xe880ee.isCreator && !_0xe880ee.isAdmin) {
-      return _0xe880ee.reply(tlang().admin);
+    // Determine the message to be sent (either the reply message or the context itself)
+    let messageToSend = context.reply_message ? context.reply_message : context;
+    // Determine the caption for the message
+    let caption = context.reply_message ? context.reply_message.text : text;
+    let mediaType = '';
+    let mediaContent;
+    let messageType = messageToSend.mtype;
+
+    // Check the type of the message and download media if necessary
+    if (messageType == "imageMessage") {
+      mediaType = "image";
+      mediaContent = await messageToSend.download();
+    } else if (messageType == "videoMessage") {
+      mediaType = "video";
+      mediaContent = await messageToSend.download();
+    } else {
+      if (!text && context.quoted) {
+        mediaContent = context.quoted.text;
+      } else {
+        mediaContent = text;
+      }
     }
-    await _0xe880ee.bot.groupSettingUpdate(_0xe880ee.chat, 'unlocked').then(_0x282118 => _0xe880ee.reply("*_Group unlocked, everyone change group settings!!_*"))["catch"](_0x320353 => _0xe880ee.reply("*_Can't change Group Setting, Sorry!_*"));
-  } catch (_0x20d64c) {
-    await _0xe880ee.error(_0x20d64c + "\n\ncommand: unlock", _0x20d64c);
+
+    if (!mediaContent) {
+      return await context.send("*_Uhh dear, reply to a message!!!_*");
+    }
+
+    // Send the message with all participants tagged, without replying to the original message
+    return await context.send(mediaContent, {
+      'caption': caption,
+      'mentions': context.metadata.participants.map(participant => participant.id)
+    }, mediaType);
+  } catch (error) {
+    await context.error(error + "\n\ncommand: tag", error);
   }
 });
 smd({
-  'pattern': "tag",
-  'alias': ['hidetag'],
+  'pattern': "009",
+  'alias': ['hidg'],
   'desc': "Tags everyperson of group without mentioning their numbers",
   'category': "group",
   'filename': __filename,

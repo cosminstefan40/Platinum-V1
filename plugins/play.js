@@ -47,15 +47,11 @@ smd({
     let _0x4342ba = await smdBuffer(_0x4f86cb.thumbnail);
     await _0x213b75.bot.sendMessage(_0x213b75.jid, {
       'image': _0x4342ba,
-      'caption': "\n*Platinum-V1 • ᴍᴜꜱɪᴄ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ*\n\n*Title :* " + _0x4f86cb.title + "\n*Url :* " + _0x4f86cb.url + "\n*Description :* " + _0x4f86cb.timestamp + "\n*Views :* " + _0x4f86cb.views + "\n*Uploaded :* " + _0x4f86cb.ago + "\n*Author :* " + _0x4f86cb.author.name + "\n\n_Platinum-v1 is singing..._\n"
+      'caption': "\n*Pʟᴀᴛɪɴᴜᴍ-V1 • ᴍᴜꜱɪᴄ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ*\n\n*Title :* " + _0x4f86cb.title + "\n*Url :* " + _0x4f86cb.url + "\n*Description :* " + _0x4f86cb.timestamp + "\n*Views :* " + _0x4f86cb.views + "\n*Uploaded :* " + _0x4f86cb.ago + "\n*Author :* " + _0x4f86cb.author.name + "\n\n_Pʟᴀᴛɪɴᴜᴍ-V1 is downloading your music..._\n"
     });
 
     // Use the new API to get download links
-    const sampleUrl = 'https://youtu.be/wJnBTPUQS5A?si=klI0qxyOnnbcriOk'; 
-    let data = await gifted.giftedyta(sampleUrl)
-    console.log(data);
-
-    const downloadApiUrl = "https://api.giftedtech.my.id/api/download/ytaudio?apikey=gifted&url=" + encodeURIComponent(_0x4f86cb.url);
+    const downloadApiUrl = "https://www.dark-yasiya-api.site/download/ytmp3?url=" + encodeURIComponent(_0x4f86cb.url);
     
     let _0x4acf6c = 3; // Retry logic
     while (_0x4acf6c > 0) {
@@ -64,8 +60,8 @@ smd({
         const _0x509920 = _0x2cc463.data;
         console.log("API Response:", _0x509920);
 
-        if (_0x509920.status && _0x509920.result.mp3) {
-          const _0x539170 = _0x509920.result.mp3;
+        if (_0x509920.status && _0x509920.result.dl_link) {
+          const _0x539170 = _0x509920.result.dl_link;
           
           // Download the mp3 file
           const _0x3ce5d2 = await axios({
@@ -112,9 +108,9 @@ smd({
     }
   } catch (_0x3c9fcf) {
     console.error("Caught Error:", _0x3c9fcf);
-    return _0x213b75.error(_0x3c9fcf + "\n\ncommand: play", _0x3c9fcf, "*_File not found!!_*");
+    return _0x213b75.error(_0x3c9fcf + "\n\ncommand: playy", _0x3c9fcf, "*_File not found!!_*");
   }
-});
+}); 
 smd({
   'pattern': "ytmp4",
   'react': "🎥",
@@ -270,7 +266,7 @@ smd({
   }
 });;
 smd({
-  'pattern': "ytsv",
+  'pattern': "ytv",
   'alias': ["video"],
   'desc': "Downloads video from YouTube.",
   'category': "downloader",
@@ -293,11 +289,11 @@ smd({
     let _0x4342ba = await smdBuffer(_0x4f86cb.thumbnail);
     await _0x213b75.bot.sendMessage(_0x213b75.jid, {
       'image': _0x4342ba,
-      'caption': "\n*Platinum-V1 • ᴠɪᴅᴇᴏ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ*\n\n*Title :* " + _0x4f86cb.title + "\n*Url :* " + _0x4f86cb.url + "\n*Description :* " + _0x4f86cb.timestamp + "\n*Views :* " + _0x4f86cb.views + "\n*Uploaded :* " + _0x4f86cb.ago + "\n*Author :* " + _0x4f86cb.author.name + "\n\n_Platinum-v1 is preparing the video..._\n"
+      'caption': "\n*Pʟᴀᴛɪɴᴜᴍ-V1 • ᴠɪᴅᴇᴏ ᴅᴏᴡɴʟᴏᴀᴅᴇʀ*\n\n*Title :* " + _0x4f86cb.title + "\n*Url :* " + _0x4f86cb.url + "\n*Description :* " + _0x4f86cb.timestamp + "\n*Views :* " + _0x4f86cb.views + "\n*Uploaded :* " + _0x4f86cb.ago + "\n*Author :* " + _0x4f86cb.author.name + "\n\n_Pʟᴀᴛɪɴᴜᴍ-V1 is preparing the video..._\n"
     });
 
     // Use the new API to get download links
-    const downloadApiUrl = "https://widipe.com/download/ytdl?url=" + encodeURIComponent(_0x4f86cb.url);
+    const downloadApiUrl = "https://www.dark-yasiya-api.site/download/ytmp4?url=" + encodeURIComponent(_0x4f86cb.url);
     
     let _0x4acf6c = 3; // Retry logic
     while (_0x4acf6c > 0) {
@@ -306,8 +302,8 @@ smd({
         const _0x509920 = _0x2cc463.data;
         console.log("API Response:", _0x509920);
 
-        if (_0x509920.status && _0x509920.result.mp4) {
-          const _0x539170 = _0x509920.result.mp4;
+        if (_0x509920.status && _0x509920.result.dl_link) {
+          const _0x539170 = _0x509920.result.dl_link;
           
           // Download the mp4 file
           const _0x3ce5d2 = await axios({
@@ -354,6 +350,6 @@ smd({
     }
   } catch (_0x3c9fcf) {
     console.error("Caught Error:", _0x3c9fcf);
-    return _0x213b75.error(_0x3c9fcf + "\n\ncommand: playvideo", _0x3c9fcf, "*_File not found!!_*");
+    return _0x213b75.error(_0x3c9fcf + "\n\ncommand: youtubevideo", _0x3c9fcf, "*_File not found!!_*");
   }
 });
