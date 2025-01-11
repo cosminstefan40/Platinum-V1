@@ -1,79 +1,95 @@
-const { bot } = require('../lib/handler.js');
-const Greetings = require('../lib/sql/greetings.js');
-const { isEnabled, setWelcomeMessage, setGoodByeMessage, getWelcomeMessage, getGoodByeMessage } = Greetings;
+const { smd } = require("../lib");
+const {
+  enableGreetings,
+  setMessage,
+  deleteMessage,
+  getMessage,
+  greetingsPreview,
+  clearGreetings
+} = require('../lib/');
 
-bot(
-   {
-      pattern: 'intro',
-      isPublic: true,
-      desc: 'Setup Intro Messages for new Group Members',
-      type: 'group',
-   },
-   async (message, match, m) => {
-      if (!message.isGroup) return message.sendReply('_for groups only!_');
-      const groupJid = m.from;
-      const args = match.trim().split(' ');
+smd({
+  pattern: "welcome ?(.*)",
+  desc: "Welcome new members.",
+  category: "group",
+  filename: __filename
+}, async (message, match) => {
+  try {
+    // Retrieve the saved welcome message for the group
+    const welcome = await getMessage(message.jid, 'welcome', message.id);
 
-      if (args[0] === 'on' || args[0] === 'off') {
-         const status = args[0] === 'on';
-         await Greetings.upsert({ groupJid, enabled: status });
-         return message.sendReply(`_Welcome messages are now ${status ? 'enabled' : 'disabled'}._`);
+    // If no argument and no welcome message exists, show an example
+    if (!match && !welcome) {
+      return await message.reply('*Example: welcome Hi &mention*');
+    }
+
+    // Handle toggling the welcome feature on/off
+    if (match === 'on' || match === 'off') {
+      if (!welcome) {
+        return await message.reply('*Example: welcome Hi &mention*');
       }
+      await enableGreetings(message.jid, 'welcome', match, message.id);
+      return await message.reply(`_Welcome ${match === 'on' ? 'Enabled' : 'Disabled'}_`);
+    }
 
-      if (args[0] === 'set') {
-         const welcomeMessage = args.slice(1).join(' ');
-         if (!welcomeMessage) {
-            return message.sendReply('_Please provide a welcome message._');
-         }
+    // Handle deleting the welcome message
+    if (match === 'delete') {
+      await deleteMessage(message.jid, 'welcome', message.id);
+      clearGreetings(message.jid, 'welcome', message.id);
+      return await message.reply('_Welcome deleted_');
+    }
 
-         await setWelcomeMessage(groupJid, welcomeMessage);
-         return message.sendReply(`_Welcome message updated successfully!_\n\n_New Message:_ ${welcomeMessage}`);
+    // Save the new welcome message
+    await setMessage(message.jid, 'welcome', match, true, message.id);
+
+    // Generate and preview the saved message
+    const { msg, options, type } = await greetingsPreview(message, 'welcome', message.id);
+    await message.bot.sendMessage(message.chat, msg, options, { quoted: message });
+    return await message.reply('_Welcome set_');
+  } catch (error) {
+    await message.error(error + "\n\ncommand: welcome", error, false);
+  }
+});
+
+smd({
+  pattern: "goodbye ?(.*)",
+  desc: "Goodbye members.",
+  category: "group",
+  filename: __filename
+}, async (message, match) => {
+  try {
+    // Retrieve the saved goodbye message for the group
+    const goodbye = await getMessage(message.jid, 'goodbye', message.id);
+
+    // If no argument and no goodbye message exists, show an example
+    if (!match && !goodbye) {
+      return await message.reply('*Example: goodbye Bye &mention*');
+    }
+
+    // Handle toggling the goodbye feature on/off
+    if (match === 'on' || match === 'off') {
+      if (!goodbye) {
+        return await message.reply('*Example: goodbye Bye &mention*');
       }
+      await enableGreetings(message.jid, 'goodbye', match, message.id);
+      return await message.reply(`_Goodbye ${match === 'on' ? 'Enabled' : 'Disabled'}_`);
+    }
 
-      if (args[0] === 'get') {
-         const currentMessage = await getWelcomeMessage(groupJid);
-         const status = await isEnabled(groupJid);
-         return message.sendReply(currentMessage ? `_Current Welcome Message:_\n${currentMessage}\n\n_Status:_ ${status ? 'Enabled' : 'Disabled'}` : '_No Welcome Message has been set yet._');
-      }
+    // Handle deleting the goodbye message
+    if (match === 'delete') {
+      await deleteMessage(message.jid, 'goodbye', message.id);
+      clearGreetings(message.jid, 'goodbye', message.id);
+      return await message.reply('_Goodbye deleted_');
+    }
 
-      return message.sendReply('_Invalid command. Usage: .welcome [on/off] | .welcome set [message] | .welcome get_');
-   }
-);
+    // Save the new goodbye message
+    await setMessage(message.jid, 'goodbye', match, true, message.id);
 
-bot(
-   {
-      pattern: 'farewell',
-      isPublic: true,
-      desc: 'Setup Farewell Messages for left Group Members',
-      type: 'group',
-   },
-   async (message, match, m) => {
-      if (!message.isGroup) return message.sendReply('_for groups only!_');
-      const groupJid = m.from;
-      const args = match.trim().split(' ');
-
-      if (args[0] === 'on' || args[0] === 'off') {
-         const status = args[0] === 'on';
-         await Greetings.upsert({ groupJid, enabled: status });
-         return message.sendReply(`_Goodbye messages are now ${status ? 'enabled' : 'disabled'}._`);
-      }
-
-      if (args[0] === 'set') {
-         const goodbyeMessage = args.slice(1).join(' ');
-         if (!goodbyeMessage) {
-            return message.sendReply('_Please provide a goodbye message._');
-         }
-
-         await setGoodByeMessage(groupJid, goodbyeMessage);
-         return message.sendReply(`_Goodbye message updated successfully!_\n\n_New Message:_ ${goodbyeMessage}`);
-      }
-
-      if (args[0] === 'get') {
-         const currentMessage = await getGoodByeMessage(groupJid);
-         const status = await isEnabled(groupJid);
-         return message.sendReply(currentMessage ? `_Current Goodbye Message:_\n${currentMessage}\n\n_Status:_ ${status ? 'Enabled' : 'Disabled'}` : '_No Goodbye Message has been set yet._');
-      }
-
-      return message.sendReply('_Invalid command. Usage: .goodbye [on/off] | .goodbye set [message] | .goodbye get_');
-   }
-);
+    // Generate and preview the saved message
+    const { msg, options, type } = await greetingsPreview(message, 'goodbye', message.id);
+    await message.bot.sendMessage(message.chat, msg, options, { quoted: message });
+    return await message.reply('_Goodbye set_');
+  } catch (error) {
+    await message.error(error + "\n\ncommand: goodbye", error, false);
+  }
+});
